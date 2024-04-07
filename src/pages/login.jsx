@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthProvider";
 
 export default function Login() {
     const [number, setNumber] = useState('')
@@ -8,24 +9,27 @@ export default function Login() {
 
     const navigate = useNavigate();
 
+    const auth = useContext(AuthContext);
+
     const formHandler = async (e) => {
         e.preventDefault();
         const credential = await loginHandler(number, password);
-        
+
         if (credential.data) {
-            navigate('/homepage')
+            navigate('/homepage');
+            auth.setCredential(credential.data);
         }
     }
 
     const checkNumberValidity = (e, value) => {
         if (value.length >= 10 && value.length <= 12) {
             console.log('true');
-            setValidNumber(true)
+            setValidNumber(true);
         } else{
             console.log('false');
-            setValidNumber(false)
+            setValidNumber(false);
         };
-        setNumber(value)
+        setNumber(value);
     }
 
     const loginHandler = async (phone, password) => {
@@ -35,6 +39,7 @@ export default function Login() {
             headers: {
                 "Content-Type": "application/json",
               },
+            credentials:"include",
             body: JSON.stringify({
                 phone: '0'+phone,
                 password
