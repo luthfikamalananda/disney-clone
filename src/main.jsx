@@ -9,15 +9,27 @@ import {
 import Login from './pages/login.jsx';
 import Homepage from './pages/homepage.jsx';
 import AuthProvider from './context/AuthProvider.jsx';
+import PublicRoutes from './component/PublicRoutes.jsx';
+import PrivateRoutes from './component/PrivateRoutes.jsx';
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Login/>,
+    element: <PublicRoutes/>,
+    children: [
+      {
+        path: "/",
+        element: <Login/>,
+      },
+    ]
   },
   {
-    path: "/homepage",
-    element: <Homepage/>,
+    element: <PrivateRoutes/>,
+    children: [
+      {
+        path: "/homepage",
+        element: <Homepage/>,
+      },
+    ]
   },
 ]);
 
