@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
 import './index.css'
 import {
   createBrowserRouter,
@@ -11,6 +10,7 @@ import Homepage from './pages/homepage.jsx';
 import AuthProvider from './context/AuthProvider.jsx';
 import PublicRoutes from './component/PublicRoutes.jsx';
 import PrivateRoutes from './component/PrivateRoutes.jsx';
+import Profile from './pages/profile.jsx';
 
 const router = createBrowserRouter([
   {
@@ -28,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "/homepage",
         element: <Homepage/>,
+      },
+      {
+        path: "/profile",
+        element: <Profile/>,
       },
     ]
   },

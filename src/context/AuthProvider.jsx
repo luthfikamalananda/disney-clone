@@ -1,5 +1,5 @@
+/* eslint-disable react/prop-types */
 import { createContext, useEffect, useState } from "react";
-import { findDOMNode } from "react-dom";
 
 export const AuthContext = createContext();
 

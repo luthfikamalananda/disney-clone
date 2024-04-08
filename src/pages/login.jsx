@@ -1,10 +1,12 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
+import instance from "../utils/axiosInstance";
 
 export default function Login() {
     const [number, setNumber] = useState('')
     const [password, setPassword] = useState('')
+    const [error, setError] = useState(null)
     const [validNumber, setValidNumber] = useState(true)
 
     const navigate = useNavigate();
@@ -16,7 +18,7 @@ export default function Login() {
         const credential = await loginHandler(number, password);
 
         if (credential.data) {
-            navigate('/homepage');
+            navigate('/profile');
             auth.setCredential(credential.data);
         }
     }
@@ -25,34 +27,29 @@ export default function Login() {
         if (value.length >= 10 && value.length <= 12) {
             console.log('true');
             setValidNumber(true);
-        } else{
+        } else {
             console.log('false');
             setValidNumber(false);
-        };
+        }
         setNumber(value);
     }
 
     const loginHandler = async (phone, password) => {
         try {
-            const fetchAPI = await fetch('http://localhost:3000/v1/auth',{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-              },
-            credentials:"include",
-            body: JSON.stringify({
-                phone: '0'+phone,
+            const fetchAPI = await instance.post('/auth', {
+                phone: '0' + phone,
                 password
             })
-        })
-        const responseJson = await fetchAPI.json();
-        console.log(responseJson.data);
-        return responseJson
+            console.log('hasil fetch',fetchAPI);
+            return fetchAPI.data
         } catch (error) {
-            console.log('error',error);
+            if (error.response.status == 401) {
+                setError(true)
+            }
+            console.log('error', error);
             return
-        } 
-        
+        }
+
     }
 
     return (
@@ -72,7 +69,7 @@ export default function Login() {
                     <div className="form-input mx-20">
                         <div className="form-number flex justify-between items-center">
                             <input type="text" value='+62' disabled className="text-[#4f5668] text-xl p-4 w-20 h-12 rounded-md bg-transparent border-2 border-[#3a4155]" />
-                            <input type="text" placeholder="Enter mobile number" value={number} className={`text-white text-xl p-4 rounded-md w-80 h-12 bg-transparent ${validNumber ? 'border-2 border-[#3a4155]' : 'border-4 border-red-700' } 
+                            <input type="text" placeholder="Enter mobile number" value={number} className={`text-white text-xl p-4 rounded-md w-80 h-12 bg-transparent ${validNumber ? 'border-2 border-[#3a4155]' : 'border-4 border-red-700'} 
                             [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
                                 onChange={(e) => {
                                     const newVar = e.target.value
@@ -87,8 +84,9 @@ export default function Login() {
                     </div>
 
                     <div className="tos">
+                    {error && <p className="text-red-700 mt-4 text-center  mx-16 text-sm font-bold">SALAH PASSWORD BLOK</p>}
                         {validNumber ? <p className="text-white mx-16 mt-4 text-center text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum in magni, odio sint beatae sed quod.
-                            Eum minima atque, reiciendis, recusandae magnam alias maiores corrupti rem eos ut obcaecati! Alias.</p>  : <p className="text-red-700 mt-4 text-center  mx-16 text-sm">Please enter valid mobile number number.</p>}
+                            Eum minima atque, reiciendis, recusandae magnam alias maiores corrupti rem eos ut obcaecati! Alias.</p> : <p className="text-red-700 mt-4 text-center  mx-16 text-sm">Please enter valid mobile number number.</p>}
                         
                     </div>
 
